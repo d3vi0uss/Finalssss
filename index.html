@@ -2,123 +2,173 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Elite Case Clicker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Case Clicker v2</title>
+
 <style>
 body{
-margin:0;
-font-family:Arial;
-background:#1b2838;
-color:white;
+  margin:0;
+  font-family:Arial;
+  background:#1b2838;
+  color:white;
 }
+
 header{
-background:#171a21;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+  background:#171a21;
+  padding:10px;
+  text-align:center;
+  font-size:14px;
 }
+
+nav{
+  background:#171a21;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+nav button{
+  flex:1 1 30%;
+  margin:4px;
+  padding:10px;
+  background:#2a475e;
+  border:none;
+  color:white;
+  font-size:14px;
+}
+
 button{
-background:#2a475e;
-border:none;
-padding:8px 12px;
-color:white;
-cursor:pointer;
-margin:5px;
+  background:#2a475e;
+  border:none;
+  padding:10px;
+  color:white;
+  margin:5px;
 }
+
 button:hover{background:#3b6a8c;}
-.section{display:none;padding:20px;}
+
+.section{display:none;padding:15px;}
 .active{display:block;}
+
 .card{
-background:#2a2f3a;
-padding:10px;
-margin:10px;
-border-radius:6px;
+  background:#2a2f3a;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+  font-size:14px;
 }
+
 .rarity-blue{border-left:5px solid #4b69ff;}
 .rarity-purple{border-left:5px solid #8847ff;}
 .rarity-pink{border-left:5px solid #d32ce6;}
 .rarity-red{border-left:5px solid #eb4b4b;}
 .rarity-gold{border-left:5px solid gold;}
-nav{background:#171a21;padding:10px;}
-canvas{background:#111;margin-top:10px;}
+
+input{
+  padding:8px;
+  width:100%;
+  margin:5px 0;
+  box-sizing:border-box;
+}
+
+#caseAnimation{
+  overflow:hidden;
+  white-space:nowrap;
+  width:100%;
+  height:80px;
+  background:#111;
+  margin-top:10px;
+}
+
+.caseItem{
+  display:inline-block;
+  width:140px;
+  margin:5px;
+  padding:10px;
+  background:#2a2f3a;
+  font-size:12px;
+}
+
+@media(min-width:768px){
+  nav button{flex:1;}
+  body{max-width:900px;margin:auto;}
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<div>
 💰 $<span id="money">0</span> |
 XP: <span id="xp">0</span> |
 Level: <span id="level">1</span> |
-Rank: <span id="rank">Silver I</span>
-</div>
+Rank: <span id="rank">Silver I</span> |
+Prestige: <span id="prestige">0</span>
 </header>
 
 <nav>
-<button onclick="show('clicker')">Clicker</button>
+<button onclick="show('clicker')">Click</button>
 <button onclick="show('cases')">Cases</button>
 <button onclick="show('inventory')">Inventory</button>
-<button onclick="show('roulette')">Roulette</button>
-<button onclick="show('blackjack')">Blackjack</button>
-<button onclick="show('battle')">Case Battle</button>
+<button onclick="show('games')">Games</button>
 <button onclick="show('banking')">Bank</button>
 <button onclick="show('leader')">Leaderboard</button>
 </nav>
 
 <div id="clicker" class="section active">
-<h2>Click for Money</h2>
-<button onclick="clickMoney()">Click (+$1)</button>
+<h3>Click for Money</h3>
+<button onclick="clickMoney()">Click (+$)</button>
+<button onclick="buyAuto()">Buy Auto Clicker ($500)</button>
+<p>Auto Clickers: <span id="auto">0</span></p>
+<button onclick="doPrestige()">Prestige (Lvl 20)</button>
 </div>
 
 <div id="cases" class="section">
-<h2>Open Case ($50)</h2>
+<h3>Open Case ($50)</h3>
 <button onclick="openCase()">Open</button>
+<div id="caseAnimation"></div>
 <p id="drop"></p>
 </div>
 
 <div id="inventory" class="section">
-<h2>Your Inventory</h2>
+<h3>Inventory</h3>
 <div id="inv"></div>
 </div>
 
-<div id="roulette" class="section">
-<h2>Arcade Roulette</h2>
+<div id="games" class="section">
+<h3>Roulette</h3>
 <input id="rouletteBet" placeholder="Bet Amount">
 <button onclick="spinRoulette()">Spin</button>
 <p id="rouletteResult"></p>
-<canvas id="wheel" width="300" height="300"></canvas>
-</div>
 
-<div id="blackjack" class="section">
-<h2>Blackjack</h2>
-<input id="bjBet" placeholder="Bet">
+<h3>Blackjack</h3>
+<input id="bjBet" placeholder="Bet Amount">
 <button onclick="startBJ()">Deal</button>
 <button onclick="hit()">Hit</button>
 <button onclick="stand()">Stand</button>
 <p id="bjDisplay"></p>
-</div>
 
-<div id="battle" class="section">
-<h2>Case Battle ($100)</h2>
+<h3>Case Battle ($100)</h3>
 <button onclick="caseBattle()">Battle Bot</button>
 <p id="battleResult"></p>
 </div>
 
 <div id="banking" class="section">
-<h2>Bank</h2>
-<p>Balance: $<span id="bank">0</span></p>
+<h3>Bank</h3>
+Balance: $<span id="bank">0</span>
+<br>
 <button onclick="deposit()">Deposit</button>
 <button onclick="withdraw()">Withdraw All</button>
 </div>
 
 <div id="leader" class="section">
-<h2>Global Leaderboard</h2>
+<h3>Leaderboard</h3>
 <div id="leaderboard"></div>
 </div>
 
 <script>
-let money=0,xp=0,level=1,rank="Silver I";
-let inventory=[],bank=0;
+let money=0,xp=0,level=1,bank=0,prestige=0,autoClickers=0;
+let inventory=[];
 let bjPlayer=[],bjDealer=[],bjBet=0;
 
 const ranks=["Silver I","Silver II","Gold Nova","Master Guardian","Legendary Eagle","Supreme","Global Elite"];
@@ -147,10 +197,11 @@ document.getElementById("money").innerText=Math.floor(money);
 document.getElementById("xp").innerText=xp;
 document.getElementById("level").innerText=level;
 document.getElementById("bank").innerText=Math.floor(bank);
+document.getElementById("auto").innerText=autoClickers;
+document.getElementById("prestige").innerText=prestige;
 let tier=Math.min(Math.floor(level/5),ranks.length-1);
-rank=ranks[tier];
-document.getElementById("rank").innerText=rank;
-localStorage.setItem("eliteSave",JSON.stringify({money,xp,level,inventory,bank}));
+document.getElementById("rank").innerText=ranks[tier];
+localStorage.setItem("eliteSave",JSON.stringify({money,xp,level,inventory,bank,prestige,autoClickers}));
 }
 
 function gainXP(a){
@@ -158,7 +209,23 @@ xp+=a;
 if(xp>=level*100){xp=0;level++;}
 }
 
-function clickMoney(){money+=1;gainXP(5);update();}
+function clickMoney(){
+money+=1+(prestige*2);
+gainXP(5);
+update();
+}
+
+function buyAuto(){
+if(money<500)return;
+money-=500;
+autoClickers++;
+update();
+}
+
+setInterval(()=>{
+money+=autoClickers*(1+prestige);
+update();
+},1000);
 
 function weightedSkin(){
 let total=skins.reduce((a,b)=>a+b.weight,0);
@@ -172,22 +239,29 @@ r-=s.weight;
 function openCase(){
 if(money<50)return;
 money-=50;
+let container=document.getElementById("caseAnimation");
+container.innerHTML="";
 let roll=[];
-for(let i=0;i<15;i++)roll.push(weightedSkin());
-let i=0;
-let anim=setInterval(()=>{
-document.getElementById("drop").innerText=roll[i].name;
-i++;
-if(i>=roll.length){
+for(let i=0;i<35;i++){
+let skin=weightedSkin();
+roll.push(skin);
+let div=document.createElement("div");
+div.className="caseItem rarity-"+skin.rarity;
+div.innerText=skin.name;
+container.appendChild(div);
+}
+let scroll=0;
+let anim=setInterval(()=>{scroll+=15;container.scrollLeft=scroll;},20);
+setTimeout(()=>{
 clearInterval(anim);
-let win=roll[roll.length-1];
+let win=roll[30];
 let float=Math.random().toFixed(4);
-inventory.push({...win,float});
+let st=Math.random()<0.1;
+inventory.push({...win,float,st});
 updateInv();
 gainXP(50);
 update();
-}
-},100);
+},2000);
 }
 
 function updateInv(){
@@ -195,11 +269,12 @@ let div=document.getElementById("inv");
 div.innerHTML="";
 inventory.forEach((item,i)=>{
 let value=Math.floor(market[item.name]+(1-item.float)*50);
+if(item.st)value*=1.5;
 div.innerHTML+=`
 <div class="card rarity-${item.rarity}">
-${item.name}<br>
+${item.st?"★ StatTrak™ ":""}${item.name}<br>
 Float: ${item.float}<br>
-Value: $${value}
+Value: $${Math.floor(value)}
 <button onclick="sell(${i},${value})">Sell</button>
 </div>`;
 });
@@ -217,11 +292,9 @@ let bet=parseInt(document.getElementById("rouletteBet").value);
 if(!bet||bet>money)return;
 money-=bet;
 let roll=Math.random();
-let result="";
-if(roll<0.45){result="Lost";}
-else if(roll<0.9){money+=bet*2;result="Win x2";}
-else{money+=bet*10;result="Jackpot x10";}
-document.getElementById("rouletteResult").innerText=result;
+if(roll<0.45){}
+else if(roll<0.9)money+=bet*2;
+else money+=bet*10;
 update();
 }
 
@@ -236,41 +309,30 @@ bjDealer=[draw(),draw()];
 displayBJ();
 }
 
-function hit(){
-bjPlayer.push(draw());
-displayBJ();
-}
+function hit(){bjPlayer.push(draw());displayBJ();}
 
 function stand(){
-while(bjDealer.reduce((a,b)=>a+b,0)<17)bjDealer.push(draw());
-let p=bjPlayer.reduce((a,b)=>a+b,0);
-let d=bjDealer.reduce((a,b)=>a+b,0);
-let result="";
-if(p>21)result="Bust!";
-else if(d>21||p>d){money+=bjBet*2;result="Win!";}
-else result="Dealer wins.";
-document.getElementById("bjDisplay").innerText=`You: ${p} Dealer: ${d} ${result}`;
+while(sum(bjDealer)<17)bjDealer.push(draw());
+let p=sum(bjPlayer),d=sum(bjDealer);
+if(p<=21&&(p>d||d>21))money+=bjBet*2;
+document.getElementById("bjDisplay").innerText="You:"+p+" Dealer:"+d;
 update();
 }
 
 function displayBJ(){
-let p=bjPlayer.reduce((a,b)=>a+b,0);
-let d=bjDealer[0];
-document.getElementById("bjDisplay").innerText=`You: ${p} Dealer: ${d} + ?`;
+document.getElementById("bjDisplay").innerText="You:"+sum(bjPlayer)+" Dealer:"+bjDealer[0]+" ?";
 }
+
+function sum(a){return a.reduce((x,y)=>x+y,0);}
 
 function caseBattle(){
 if(money<100)return;
 money-=100;
-let p=weightedSkin();
-let b=weightedSkin();
+let p=weightedSkin(),b=weightedSkin();
 let pVal=p.base+Math.random()*50;
 let bVal=b.base+Math.random()*50;
-let result="";
-if(pVal>bVal){money+=200;result="You Win!";}
-else result="Bot Wins!";
-document.getElementById("battleResult").innerHTML=
-`You: ${p.name}<br>Bot: ${b.name}<br>${result}`;
+if(pVal>bVal)money+=200;
+document.getElementById("battleResult").innerHTML="You:"+p.name+"<br>Bot:"+b.name;
 update();
 }
 
@@ -295,8 +357,8 @@ if(market[s]<5)market[s]=5;
 function updateLeaderboard(){
 let list=[
 {name:"You",money:money},
-{name:"KnifeLord",money:Math.floor(Math.random()*60000)},
-{name:"CSKing",money:Math.floor(Math.random()*80000)}
+{name:"KnifeLord",money:Math.random()*60000},
+{name:"CSKing",money:Math.random()*80000}
 ];
 list.sort((a,b)=>b.money-a.money);
 let text="";
@@ -305,11 +367,22 @@ document.getElementById("leaderboard").innerHTML=text;
 }
 setInterval(updateLeaderboard,5000);
 
+function doPrestige(){
+if(level<20)return alert("Reach Level 20!");
+prestige++;
+money=0;xp=0;level=1;inventory=[];bank=0;
+updateInv();update();
+}
+
 function load(){
 let s=JSON.parse(localStorage.getItem("eliteSave"));
-if(s){money=s.money;xp=s.xp;level=s.level;inventory=s.inventory;bank=s.bank;}
-updateInv();
-update();
+if(s){
+money=s.money;xp=s.xp;level=s.level;
+inventory=s.inventory;bank=s.bank;
+prestige=s.prestige||0;
+autoClickers=s.autoClickers||0;
+}
+updateInv();update();
 }
 load();
 </script>
