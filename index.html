@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Elite Case Clicker</title>
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#1b2838;
+color:white;
+}
+header{
+background:#171a21;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+button{
+background:#2a475e;
+border:none;
+padding:8px 12px;
+color:white;
+cursor:pointer;
+margin:5px;
+}
+button:hover{background:#3b6a8c;}
+.section{display:none;padding:20px;}
+.active{display:block;}
+.card{
+background:#2a2f3a;
+padding:10px;
+margin:10px;
+border-radius:6px;
+}
+.rarity-blue{border-left:5px solid #4b69ff;}
+.rarity-purple{border-left:5px solid #8847ff;}
+.rarity-pink{border-left:5px solid #d32ce6;}
+.rarity-red{border-left:5px solid #eb4b4b;}
+.rarity-gold{border-left:5px solid gold;}
+nav{background:#171a21;padding:10px;}
+canvas{background:#111;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<header>
+<div>
+💰 $<span id="money">0</span> |
+XP: <span id="xp">0</span> |
+Level: <span id="level">1</span> |
+Rank: <span id="rank">Silver I</span>
+</div>
+</header>
+
+<nav>
+<button onclick="show('clicker')">Clicker</button>
+<button onclick="show('cases')">Cases</button>
+<button onclick="show('inventory')">Inventory</button>
+<button onclick="show('roulette')">Roulette</button>
+<button onclick="show('blackjack')">Blackjack</button>
+<button onclick="show('battle')">Case Battle</button>
+<button onclick="show('banking')">Bank</button>
+<button onclick="show('leader')">Leaderboard</button>
+</nav>
+
+<div id="clicker" class="section active">
+<h2>Click for Money</h2>
+<button onclick="clickMoney()">Click (+$1)</button>
+</div>
+
+<div id="cases" class="section">
+<h2>Open Case ($50)</h2>
+<button onclick="openCase()">Open</button>
+<p id="drop"></p>
+</div>
+
+<div id="inventory" class="section">
+<h2>Your Inventory</h2>
+<div id="inv"></div>
+</div>
+
+<div id="roulette" class="section">
+<h2>Arcade Roulette</h2>
+<input id="rouletteBet" placeholder="Bet Amount">
+<button onclick="spinRoulette()">Spin</button>
+<p id="rouletteResult"></p>
+<canvas id="wheel" width="300" height="300"></canvas>
+</div>
+
+<div id="blackjack" class="section">
+<h2>Blackjack</h2>
+<input id="bjBet" placeholder="Bet">
+<button onclick="startBJ()">Deal</button>
+<button onclick="hit()">Hit</button>
+<button onclick="stand()">Stand</button>
+<p id="bjDisplay"></p>
+</div>
+
+<div id="battle" class="section">
+<h2>Case Battle ($100)</h2>
+<button onclick="caseBattle()">Battle Bot</button>
+<p id="battleResult"></p>
+</div>
+
+<div id="banking" class="section">
+<h2>Bank</h2>
+<p>Balance: $<span id="bank">0</span></p>
+<button onclick="deposit()">Deposit</button>
+<button onclick="withdraw()">Withdraw All</button>
+</div>
+
+<div id="leader" class="section">
+<h2>Global Leaderboard</h2>
+<div id="leaderboard"></div>
+</div>
+
+<script>
+let money=0,xp=0,level=1,rank="Silver I";
+let inventory=[],bank=0;
+let bjPlayer=[],bjDealer=[],bjBet=0;
+
+const ranks=["Silver I","Silver II","Gold Nova","Master Guardian","Legendary Eagle","Supreme","Global Elite"];
+
+const skins=[
+{name:"AK-47 | Elite Build",rarity:"blue",base:20,weight:40},
+{name:"M4A1-S | Cyrex",rarity:"purple",base:40,weight:25},
+{name:"AWP | Oni Taiji",rarity:"pink",base:70,weight:15},
+{name:"AK-47 | Bloodsport",rarity:"red",base:100,weight:10},
+{name:"Karambit | Ruby",rarity:"gold",base:500,weight:4},
+{name:"Karambit | Emerald",rarity:"gold",base:500,weight:4},
+{name:"Karambit | Sapphire",rarity:"gold",base:500,weight:4},
+{name:"Karambit | Blue Gem",rarity:"gold",base:800,weight:3}
+];
+
+let market={};
+skins.forEach(s=>market[s.name]=s.base);
+
+function show(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function update(){
+document.getElementById("money").innerText=Math.floor(money);
+document.getElementById("xp").innerText=xp;
+document.getElementById("level").innerText=level;
+document.getElementById("bank").innerText=Math.floor(bank);
+let tier=Math.min(Math.floor(level/5),ranks.length-1);
+rank=ranks[tier];
+document.getElementById("rank").innerText=rank;
+localStorage.setItem("eliteSave",JSON.stringify({money,xp,level,inventory,bank}));
+}
+
+function gainXP(a){
+xp+=a;
+if(xp>=level*100){xp=0;level++;}
+}
+
+function clickMoney(){money+=1;gainXP(5);update();}
+
+function weightedSkin(){
+let total=skins.reduce((a,b)=>a+b.weight,0);
+let r=Math.random()*total;
+for(let s of skins){
+if(r<s.weight)return s;
+r-=s.weight;
+}
+}
+
+function openCase(){
+if(money<50)return;
+money-=50;
+let roll=[];
+for(let i=0;i<15;i++)roll.push(weightedSkin());
+let i=0;
+let anim=setInterval(()=>{
+document.getElementById("drop").innerText=roll[i].name;
+i++;
+if(i>=roll.length){
+clearInterval(anim);
+let win=roll[roll.length-1];
+let float=Math.random().toFixed(4);
+inventory.push({...win,float});
+updateInv();
+gainXP(50);
+update();
+}
+},100);
+}
+
+function updateInv(){
+let div=document.getElementById("inv");
+div.innerHTML="";
+inventory.forEach((item,i)=>{
+let value=Math.floor(market[item.name]+(1-item.float)*50);
+div.innerHTML+=`
+<div class="card rarity-${item.rarity}">
+${item.name}<br>
+Float: ${item.float}<br>
+Value: $${value}
+<button onclick="sell(${i},${value})">Sell</button>
+</div>`;
+});
+}
+
+function sell(i,v){
+money+=v;
+inventory.splice(i,1);
+updateInv();
+update();
+}
+
+function spinRoulette(){
+let bet=parseInt(document.getElementById("rouletteBet").value);
+if(!bet||bet>money)return;
+money-=bet;
+let roll=Math.random();
+let result="";
+if(roll<0.45){result="Lost";}
+else if(roll<0.9){money+=bet*2;result="Win x2";}
+else{money+=bet*10;result="Jackpot x10";}
+document.getElementById("rouletteResult").innerText=result;
+update();
+}
+
+function draw(){return Math.floor(Math.random()*11)+1;}
+
+function startBJ(){
+bjBet=parseInt(document.getElementById("bjBet").value);
+if(!bjBet||bjBet>money)return;
+money-=bjBet;
+bjPlayer=[draw(),draw()];
+bjDealer=[draw(),draw()];
+displayBJ();
+}
+
+function hit(){
+bjPlayer.push(draw());
+displayBJ();
+}
+
+function stand(){
+while(bjDealer.reduce((a,b)=>a+b,0)<17)bjDealer.push(draw());
+let p=bjPlayer.reduce((a,b)=>a+b,0);
+let d=bjDealer.reduce((a,b)=>a+b,0);
+let result="";
+if(p>21)result="Bust!";
+else if(d>21||p>d){money+=bjBet*2;result="Win!";}
+else result="Dealer wins.";
+document.getElementById("bjDisplay").innerText=`You: ${p} Dealer: ${d} ${result}`;
+update();
+}
+
+function displayBJ(){
+let p=bjPlayer.reduce((a,b)=>a+b,0);
+let d=bjDealer[0];
+document.getElementById("bjDisplay").innerText=`You: ${p} Dealer: ${d} + ?`;
+}
+
+function caseBattle(){
+if(money<100)return;
+money-=100;
+let p=weightedSkin();
+let b=weightedSkin();
+let pVal=p.base+Math.random()*50;
+let bVal=b.base+Math.random()*50;
+let result="";
+if(pVal>bVal){money+=200;result="You Win!";}
+else result="Bot Wins!";
+document.getElementById("battleResult").innerHTML=
+`You: ${p.name}<br>Bot: ${b.name}<br>${result}`;
+update();
+}
+
+function deposit(){
+let amt=parseInt(prompt("Deposit amount"));
+if(!amt||amt>money)return;
+money-=amt;bank+=amt;update();
+}
+
+function withdraw(){money+=bank;bank=0;update();}
+
+setInterval(()=>{bank*=1.01;},5000);
+
+setInterval(()=>{
+for(let s in market){
+let change=(Math.random()*0.2-0.1);
+market[s]+=market[s]*change;
+if(market[s]<5)market[s]=5;
+}
+},4000);
+
+function updateLeaderboard(){
+let list=[
+{name:"You",money:money},
+{name:"KnifeLord",money:Math.floor(Math.random()*60000)},
+{name:"CSKing",money:Math.floor(Math.random()*80000)}
+];
+list.sort((a,b)=>b.money-a.money);
+let text="";
+list.forEach(p=>text+=p.name+" - $"+Math.floor(p.money)+"<br>");
+document.getElementById("leaderboard").innerHTML=text;
+}
+setInterval(updateLeaderboard,5000);
+
+function load(){
+let s=JSON.parse(localStorage.getItem("eliteSave"));
+if(s){money=s.money;xp=s.xp;level=s.level;inventory=s.inventory;bank=s.bank;}
+updateInv();
+update();
+}
+load();
+</script>
+
+</body>
+</html>
