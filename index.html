@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonForge | Esports Economy & Casino Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-ambient"></div>
+  <header class="topbar glass">
+    <div class="brand">
+      <h1>NeonForge</h1>
+      <p>Client-side CSGO Economy + Casino Suite</p>
+    </div>
+    <div class="top-stats">
+      <div class="chip">Balance: <span id="balanceValue">$0.00</span></div>
+      <div class="chip">XP: <span id="xpValue">0</span></div>
+      <div class="chip">Level: <span id="levelValue">1</span></div>
+      <div class="chip">Prestige: <span id="prestigeValue">0</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs glass" id="mainTabs">
+    <button class="tab-btn active" data-tab="economy">Economy</button>
+    <button class="tab-btn" data-tab="casino">Casino</button>
+    <button class="tab-btn" data-tab="stats">Analytics</button>
+    <button class="tab-btn" data-tab="responsible">Responsible Play</button>
+  </nav>
+
+  <main>
+    <section class="tab-panel active" id="economyPanel">
+      <div class="grid-3">
+        <article class="glass card">
+          <h2>Case Opening</h2>
+          <div class="case-controls">
+            <select id="caseSelect"></select>
+            <button id="openCaseBtn" class="btn primary">Open Case</button>
+          </div>
+          <div id="reel" class="reel"></div>
+          <small>Transparent odds shown per case.</small>
+          <div id="caseOdds" class="odds-list"></div>
+        </article>
+
+        <article class="glass card">
+          <h2>Inventory</h2>
+          <div class="inventory-actions">
+            <button id="sellSelectedBtn" class="btn">Sell Selected</button>
+            <button id="tradeUpBtn" class="btn">Trade-Up (10)</button>
+            <button id="shareStatsBtn" class="btn">Share Stats Card</button>
+          </div>
+          <div id="inventoryGrid" class="inventory-grid"></div>
+        </article>
+
+        <article class="glass card">
+          <h2>Economy Systems</h2>
+          <div class="stack">
+            <div>Idle Income / sec: <span id="idleRate">0.00</span></div>
+            <div>Market Trend: <span id="marketTrend">Neutral</span></div>
+            <div>Achievements: <span id="achievementCount">0</span></div>
+            <div>Cosmetics unlocked: <span id="cosmeticCount">0</span></div>
+          </div>
+          <div class="row">
+            <button id="upgradeIdleBtn" class="btn">Upgrade Idle</button>
+            <button id="prestigeBtn" class="btn warning">Prestige</button>
+            <button id="aiBattleBtn" class="btn">AI Case Battle</button>
+          </div>
+          <div id="marketTable" class="market-table"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="casinoPanel">
+      <div class="casino-layout">
+        <aside class="glass game-menu" id="casinoMenu"></aside>
+        <article class="glass casino-stage">
+          <div class="game-header">
+            <h2 id="casinoGameTitle">Blackjack</h2>
+            <div class="seed-box">
+              Client Seed: <span id="clientSeed"></span> |
+              Server Seed: <span id="serverSeed"></span>
+              <button id="rerollSeed" class="btn mini">Regenerate</button>
+            </div>
+          </div>
+          <div id="casinoGameContainer"></div>
+          <div id="gameOdds" class="odds-banner"></div>
+          <div id="casinoHistory" class="history-list"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="statsPanel">
+      <div class="grid-2">
+        <article class="glass card">
+          <h2>Casino Stats</h2>
+          <div class="stats-grid" id="statsCards"></div>
+        </article>
+        <article class="glass card">
+          <h2>Performance Charts</h2>
+          <canvas id="statsChart" width="600" height="280"></canvas>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="responsiblePanel">
+      <article class="glass card">
+        <h2>Responsible Gaming</h2>
+        <div class="row wrap">
+          <label>Session Timer <input type="checkbox" id="sessionTimerToggle" checked /></label>
+          <label>Reduced Animations <input type="checkbox" id="reducedMotionToggle" /></label>
+          <button id="resetSessionBtn" class="btn">Reset Session</button>
+        </div>
+        <div class="stack">
+          <div>Session Duration: <span id="sessionDuration">00:00</span></div>
+          <div>Session P/L: <span id="sessionPL">$0.00</span></div>
+          <div>Next Break Reminder: <span id="breakTimer">30:00</span></div>
+        </div>
+        <p class="muted">Odds are always disclosed. No near-miss manipulation or dark patterns are used in this simulator.</p>
+      </article>
+    </section>
+  </main>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <template id="statsCardTemplate">
+    <div class="stat-card">
+      <h3></h3>
+      <p></p>
+    </div>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
