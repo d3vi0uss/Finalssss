@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#11101d"><meta name="description" content="Vaultline: an original offline case-opening idle game.">
+  <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css"><title>Vaultline // Skin Syndicate</title>
+</head>
+<body>
+  <div class="grain"></div><div id="toast" aria-live="polite"></div>
+  <aside class="side"><div class="brand"><span class="brand-mark">V</span><span>VAULTLINE<small>SKIN SYNDICATE</small></span></div>
+    <nav id="nav">
+      <button class="active" data-page="home">⌂ <span>Home</span></button><button data-page="cases">▣ <span>Cases</span></button><button data-page="inventory">▧ <span>Inventory</span><b id="invCount">0</b></button><button data-page="market">◈ <span>Market</span></button><button data-page="upgrades">↟ <span>Upgrades</span></button><button data-page="missions">◎ <span>Missions</span></button><button data-page="achievements">★ <span>Achievements</span></button><button data-page="stats">▤ <span>Stats</span></button><button data-page="profile">⚙ <span>Profile</span></button>
+    </nav><div class="side-foot"><span class="online"></span> LOCAL MARKET ONLINE</div>
+  </aside>
+  <main><header><button id="menu" aria-label="Toggle navigation">☰</button><div class="crumb" id="crumb">COMMAND CENTER <em>/ HOME</em></div><div class="header-actions"><button id="sound" title="Sound">♬</button><button class="daily" id="daily">DAILY DROP <b id="dailyText">READY</b></button></div></header>
+  <section class="wallet"><div><span>LIQUID CASH</span><strong id="cash">$250</strong></div><div><span>VAULT VALUE</span><strong id="vault">$0</strong></div><div class="level"><span>LEVEL <b id="level">1</b> · RECRUIT</span><div class="xpbar"><i id="xpBar"></i></div><small id="xp">0 / 100 XP</small></div></section>
+  <div id="pages">
+    <section class="page active" id="homePage"><div class="hero panel"><div class="hero-copy"><p class="eyebrow">OPERATION // STARTER SHIFT</p><h1>Build the <i>vault.</i><br>Own the night.</h1><p>Run contracts, crack cases, and turn field finds into an underground collection.</p><div class="income"><span>PER CLICK <b id="clickValue">$12</b></span><span>PASSIVE <b id="passiveValue">$0/s</b></span></div><button id="work" class="work">RUN CONTRACT <small>+ CASH & XP</small></button></div><div class="hero-art"><div class="radar"></div><div class="case-hero"><span>VL</span><b>01</b><i></i></div><div class="scan">ENCRYPTED DROP<br><b>READY FOR ACQUISITION</b></div></div></div>
+      <div class="home-grid"><div class="panel next"><p class="eyebrow">NEXT OBJECTIVE</p><h2 id="goalTitle">Acquire your first field case</h2><div class="progress"><i id="goalProgress"></i></div><small id="goalCopy">$250 / $400 cash secured</small><button data-page="cases" class="text-btn">VIEW CASES →</button></div><div class="panel event"><p class="eyebrow">LIVE MARKET SIGNAL</p><h2 id="eventName">Collector Demand</h2><p id="eventCopy">Prismatic finishes are trending upward.</p><span>+18% <b>EPIC+ VALUE</b></span></div><div class="panel rank"><p class="eyebrow">OPERATOR STATUS</p><div><strong id="rankName">RECRUIT</strong><span>Earn XP to unlock the next case tier.</span></div><div class="rank-dots" id="rankDots"></div></div></div>
+    </section>
+    <section class="page" id="casesPage"><div class="page-title"><div><p class="eyebrow">ARMORY // SEALED DROPS</p><h1>Pick a case.</h1></div><p>Every roll is independently fair. Tap a case to inspect exact odds.</p></div><div id="caseGrid" class="case-grid"></div></section>
+    <section class="page" id="inventoryPage"><div class="page-title"><div><p class="eyebrow">PERSONAL VAULT</p><h1>Your collection.</h1></div><div class="filters"><input id="search" placeholder="Search skins"><select id="rarityFilter"><option value="all">All rarities</option></select><select id="sort"><option value="value">Highest value</option><option value="new">Newest</option><option value="float">Lowest float</option></select></div></div><div id="inventoryGrid" class="inventory-grid"></div><div id="emptyInventory" class="empty">Your vault is empty.<button data-page="cases">OPEN A CASE</button></div></section>
+    <section class="page" id="marketPage"><div class="page-title"><div><p class="eyebrow">OFFLINE EXCHANGE</p><h1>Local market.</h1></div><p>Prices refresh from supply, rarity, and a simulated market signal.</p></div><div id="marketEvent" class="market-event"></div><div id="marketGrid" class="market-grid"></div></section>
+    <section class="page" id="upgradesPage"><div class="page-title"><div><p class="eyebrow">OPERATIONS // IMPROVEMENTS</p><h1>Get sharper.</h1></div><p>Upgrades permanently improve this run. Unlock more at higher levels.</p></div><div id="upgradeGrid" class="upgrade-grid"></div></section>
+    <section class="page" id="missionsPage"><div class="page-title"><div><p class="eyebrow">ACTIVE CONTRACTS</p><h1>Chase the signal.</h1></div><p>Complete contracts for cash and operator XP.</p></div><div id="missionGrid" class="mission-grid"></div></section>
+    <section class="page" id="achievementsPage"><div class="page-title"><div><p class="eyebrow">FIELD RECORD</p><h1>Milestones.</h1></div><p id="achievementCount">0 unlocked</p></div><div id="achievementGrid" class="achievement-grid"></div></section>
+    <section class="page" id="statsPage"><div class="page-title"><div><p class="eyebrow">OPERATIONAL INTELLIGENCE</p><h1>Stats.</h1></div></div><div id="statsGrid" class="stats-grid"></div><div class="panel chart"><p class="eyebrow">COLLECTION VALUE</p><div id="chartBars"></div></div></section>
+    <section class="page" id="profilePage"><div class="page-title"><div><p class="eyebrow">OPERATOR PROFILE</p><h1>Control room.</h1></div></div><div class="profile-grid"><div class="panel prestige"><p class="eyebrow">REBIRTH PROTOCOL</p><h2>Prestige at $1.00M</h2><p>Reset cash, upgrades, and cases for permanent Vault Marks. Your collection stays displayed in your record.</p><button id="prestigeBtn">PROTOCOL LOCKED</button></div><div class="panel save-panel"><p class="eyebrow">LOCAL SAVE</p><button id="exportBtn">EXPORT SAVE</button><label>IMPORT SAVE<input id="importInput" type="file" accept="application/json"></label><button id="resetBtn" class="danger">RESET SAVE</button></div></div></section>
+  </div></main>
+  <div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+  <script src="app.js"></script>
+</body></html>
